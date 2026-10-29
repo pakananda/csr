@@ -1,378 +1,333 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekapitulasi Skor Penilaian Nala CSR</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-
-        /* FREEZE COLUMNS */
-        .sticky-left { position: sticky; left: 0; z-index: 20; background-color: #ffffff; }
-        th.sticky-left { background-color: #f9fafb; z-index: 30; }
-        .sticky-right { position: sticky; right: 0; z-index: 20; background-color: #f0f9ff; }
-        th.sticky-right { background-color: #e0f2fe; z-index: 30; }
-
-        .sticky-left::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 2px; background-color: #e5e7eb; }
-        .sticky-right::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 2px; background-color: #bae6fd; }
-
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-        @media print {
-            @page { size: A4 portrait; margin: 12mm 10mm; }
-            body { background: white !important; color: black !important; font-size: 10pt; }
-            .no-print { display: none !important; }
-            .print-full-width { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
-            .shadow-sm { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
-            .chart-container { max-height: 220px !important; }
-            table { page-break-inside: auto; }
-            tr { page-break-inside: avoid; }
-            thead { display: table-header-group; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; }
-            .sticky-left, .sticky-right { position: static !important; }
-        }
-        .print-header { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rekapitulasi Skor Penilaian Nala CSR</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--ink:#14283c;--mut:#5d6f80;--line:#d3dce3;--bg:#eef2f1;--teal:#0f766e;--x:#c98a12;--xi:#2b6cb0;--xii:#1f8a63}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.wrap{max-width:1280px;margin:0 auto;padding:16px}
+.top{background:var(--ink);color:#fff;border-radius:14px;padding:18px 22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.top h1{margin:0;font-size:22px}.top p{margin:2px 0 0;color:#aebfcd;font-size:13px}
+.btn{border:0;border-radius:9px;padding:9px 16px;font:600 13px inherit;font-family:inherit;cursor:pointer;background:#27425c;color:#fff}
+.btn.pri{background:#e0a21b;color:#14283c}.btn:hover{filter:brightness(1.1)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tab{border:1px solid var(--line);background:#fff;color:var(--mut);padding:10px 16px;border-radius:10px;font:600 13px inherit;font-family:inherit;cursor:pointer}
+.tab.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.panel h2{margin:0 0 12px;font-size:16px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.bar label{display:block;font-size:12px;font-weight:600;color:var(--mut);margin-bottom:3px}
+input,select{border:1px solid var(--line);border-radius:9px;padding:8px 11px;font:inherit;background:#f8fafa;min-width:150px}
+input:focus,select:focus{outline:2px solid var(--teal);outline-offset:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.card{border-radius:12px;padding:15px 18px;color:#fff}
+.card small{font-size:12px;font-weight:600;opacity:.9}
+.card b{display:block;font-size:26px;line-height:1.2;margin:4px 0 2px}
+.card span{font-size:13px;opacity:.95}
+.jX{background:var(--x)}.jXI{background:var(--xi)}.jXII{background:var(--xii)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:var(--ink);color:#fff;font-size:12px;white-space:nowrap}
+tbody tr:nth-child(even){background:#f6f9f9}
+.c{text-align:center}.r{text-align:right}.k{font-weight:700}
+td.tot,th.tot{background:#e3f3f0;color:#0b524c;font-weight:700}th.tot{background:var(--teal);color:#fff}
+.sl{position:sticky;left:0;z-index:2;background:#fff}.sr{position:sticky;right:0;z-index:2}
+th.sl,th.sr{background:var(--ink);z-index:3}
+.db{position:relative;min-width:120px}.db i{position:absolute;left:0;top:0;bottom:0;background:rgba(15,118,110,.18)}.db span{position:relative}
+.badge{display:inline-block;background:#e0a21b;color:#14283c;border-radius:6px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:6px}
+.empty{padding:22px;text-align:center;color:var(--mut)}
+.err{background:#fdecec;border:1px solid #f0b4b4;color:#8a1f1f;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none}
+.hidden{display:none!important}
+.pr{display:none}
+@media(max-width:760px){.grid3{grid-template-columns:1fr}}
+@media print{
+ @page{size:A4 landscape;margin:8mm}
+ body{background:#fff;font-size:9pt}.wrap{max-width:none;padding:0}
+ .noprint,.tabs,.top{display:none!important}
+ .pr{display:block;text-align:center;border-bottom:2px solid var(--teal);padding-bottom:5px;margin-bottom:8px}
+ .pr h1{margin:0;font-size:15pt}.pr p{margin:1px 0;font-size:9pt;color:#444}
+ .panel{border:0;padding:0;margin-bottom:8px}.panel h2{font-size:11pt;margin-bottom:5px}
+ .scroll{overflow:visible;border:0}
+ .grid3{gap:8px;margin-bottom:8px}.card{padding:8px 12px}.card b{font-size:15pt}
+ table{font-size:8pt}th,td{padding:3px 5px;border-color:#888}
+ .sl,.sr{position:static}
+ tr{break-inside:avoid}thead{display:table-header-group}
+ #matrix{font-size:6.5pt}#matrix th,#matrix td{padding:2px 1px;text-align:center}
+ #matrix th:first-child,#matrix td:first-child{text-align:left;padding-left:4px}
+}
+</style>
 </head>
-<body class="p-4 md:p-8">
+<body>
+<div class="wrap">
 
-    <div class="max-w-6xl mx-auto print-full-width">
-        <!-- HEADER PRINT -->
-        <div class="print-header">
-            <h1 class="text-2xl font-bold text-gray-800">REKAPITULASI SKOR PENILAIAN NALA CSR</h1>
-            <p class="text-sm text-gray-600">Laporan Hasil Penilaian Kebersihan & Keamanan Sarpas</p>
-            <p class="text-xs text-gray-500 mt-1" id="print-date-range">Periode: -</p>
-        </div>
+<div class="pr">
+ <h1 id="pTitle"></h1>
+ <p>Penilaian Kebersihan &amp; Keamanan Sarpras Kelas</p>
+ <p id="pSub"></p>
+</div>
 
-        <!-- HEADER WEB & NAVIGATION -->
-        <div class="no-print bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-3">
-                    <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                        <i class="fa-solid fa-chart-column text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Rekapitulasi Skor Penilaian Nala CSR</h1>
-                        <p class="text-sm text-gray-500">Dashboard Hasil Pemantauan & Evaluasi Sarpas Kelas</p>
-                    </div>
-                </div>
-            </div>
+<div class="top noprint">
+ <div><h1>Nala CSR Dashboard</h1><p>Rekapitulasi penilaian kebersihan &amp; keamanan kelas</p></div>
+ <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <span id="upd" style="font-size:12px;color:#aebfcd"></span>
+  <button class="btn" onclick="loadAll()">Muat ulang</button>
+  <button class="btn pri" onclick="window.print()">Cetak A4</button>
+ </div>
+</div>
 
-            <div class="flex flex-wrap items-center gap-2">
-                <span class="text-xs text-gray-400 mr-2 flex items-center gap-1">
-                    <i class="fa-solid fa-bolt text-amber-500"></i> Auto-refresh 2m
-                </span>
-                <button onclick="fetchData()" id="btn-refresh" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-medium text-sm transition-all">
-                    <i class="fa-solid fa-rotate-right" id="refresh-icon"></i> Refresh
-                </button>
-                <button onclick="window.print()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-all">
-                    <i class="fa-solid fa-print"></i> Cetak A4
-                </button>
-            </div>
-        </div>
+<div class="tabs">
+ <button class="tab on" id="t-jurnal" onclick="tab('jurnal')">Jurnal Kebersihan Kelas</button>
+ <button class="tab" id="t-juri" onclick="tab('juri')">Hasil Inputan Juri</button>
+ <button class="tab" id="t-juara" onclick="tab('juara')">Juara &amp; Rekapitulasi Total</button>
+</div>
 
-        <!-- FILTER RENTANG TANGGAL -->
-        <div class="no-print bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <div class="flex-1">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Mulai</label>
-                    <input type="date" id="startDate" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="flex-1">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Selesai</label>
-                    <input type="date" id="endDate" class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="flex items-end">
-                    <button onclick="applyFilter()" class="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 text-sm font-medium rounded-xl transition-all h-[38px]">
-                        <i class="fa-solid fa-filter mr-1"></i> Terapkan
-                    </button>
-                </div>
-            </div>
-        </div>
+<div class="err" id="err"></div>
 
-        <!-- KARTU JUARA PER JENJANG -->
-        <div class="mb-6">
-            <h2 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-trophy text-amber-500"></i> Nilai Tertinggi Per Jenjang
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-200/60 shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-2 -bottom-2 text-amber-200/50 text-6xl"><i class="fa-solid fa-award"></i></div>
-                    <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg mb-2">Jenjang Kelas X</span>
-                    <h3 class="text-2xl font-extrabold text-gray-800" id="top-x-class">-</h3>
-                    <p class="text-sm text-gray-600 mt-1">Total Skor: <span class="font-bold text-amber-700 text-lg" id="top-x-score">0</span></p>
-                </div>
+<!-- TAB JURNAL -->
+<section id="s-jurnal">
+ <div class="panel noprint"><div class="bar">
+  <div><label for="d1">Tanggal mulai</label><input type="date" id="d1"></div>
+  <div><label for="d2">Tanggal selesai</label><input type="date" id="d2"></div>
+  <button class="btn pri" onclick="renderJurnal()">Terapkan</button>
+  <button class="btn" style="background:#5d6f80" onclick="allDates()">Semua tanggal</button>
+ </div></div>
+ <div class="grid3" id="topJ"></div>
+ <div class="panel noprint"><h2>Total skor jurnal per kelas</h2><div style="height:270px"><canvas id="chart"></canvas></div></div>
+ <div class="panel">
+  <div class="bar" style="justify-content:space-between;margin-bottom:10px">
+   <h2 style="margin:0">Matriks skor jurnal per hari</h2>
+   <input class="noprint" type="search" id="q" placeholder="Cari kelas…" oninput="renderJurnal()">
+  </div>
+  <div class="scroll"><table id="matrix"></table></div>
+ </div>
+</section>
 
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-2xl border border-blue-200/60 shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-2 -bottom-2 text-blue-200/50 text-6xl"><i class="fa-solid fa-medal"></i></div>
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-lg mb-2">Jenjang Kelas XI</span>
-                    <h3 class="text-2xl font-extrabold text-gray-800" id="top-xi-class">-</h3>
-                    <p class="text-sm text-gray-600 mt-1">Total Skor: <span class="font-bold text-blue-700 text-lg" id="top-xi-score">0</span></p>
-                </div>
+<!-- FILTER BULAN (Juri & Juara) -->
+<div class="panel noprint hidden" id="bulanBar"><div class="bar">
+ <div><label for="selBulan">Bulan penilaian</label><select id="selBulan" onchange="renderRekap()"><option value="">Semua bulan (akumulasi)</option></select></div>
+ <div><label for="selSort">Urutkan tabel</label><select id="selSort" onchange="renderRekap()">
+  <option value="skor">Juara (skor tertinggi)</option>
+  <option value="jenjang">Per jenjang, juara dulu</option>
+  <option value="nama">Nama kelas (A–Z)</option>
+  <option value="namaz">Nama kelas (Z–A)</option>
+ </select></div>
+</div></div>
 
-                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-2xl border border-emerald-200/60 shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-2 -bottom-2 text-emerald-200/50 text-6xl"><i class="fa-solid fa-crown"></i></div>
-                    <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg mb-2">Jenjang Kelas XII</span>
-                    <h3 class="text-2xl font-extrabold text-gray-800" id="top-xii-class">-</h3>
-                    <p class="text-sm text-gray-600 mt-1">Total Skor: <span class="font-bold text-emerald-700 text-lg" id="top-xii-score">0</span></p>
-                </div>
-            </div>
-        </div>
+<!-- TAB JURI -->
+<section id="s-juri" class="hidden">
+ <div class="panel"><h2>Data penilaian oleh juri</h2><div class="scroll"><table id="juriT"></table></div></div>
+</section>
 
-        <!-- GRAFIK SEBARAN TOTAL SKOR -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h2 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-chart-bar text-blue-600"></i> Sebaran Total Skor Per Kelas
-            </h2>
-            <div class="chart-container relative h-[260px] w-full">
-                <canvas id="scoreChart"></canvas>
-            </div>
-        </div>
+<!-- TAB JUARA -->
+<section id="s-juara" class="hidden">
+ <div class="grid3" id="topC"></div>
+ <div class="panel"><h2>Rekapitulasi total penilaian (jurnal + juri)</h2><div class="scroll"><table id="totalT"></table></div></div>
+</section>
 
-        <!-- TABEL DATA MATRIKS HARIAN -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-table-list text-gray-600"></i> Matriks Rekapitulasi Skor Per Hari
-                </h2>
-                <div class="no-print w-full sm:w-64">
-                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari kelas..." class="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-            </div>
+<div class="pr" style="margin-top:8px;font-size:8pt;color:#666">Dicetak dari Dashboard Nala CSR pada <span id="pTime"></span></div>
+</div>
 
-            <div class="overflow-x-auto custom-scrollbar border border-gray-200 rounded-xl">
-                <table class="w-full text-left border-collapse min-w-[800px]" id="dataTable">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider" id="tableHeader"></tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm text-gray-700" id="tableBody"></tbody>
-                </table>
-            </div>
-        </div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbxopF0Wmeb8gqeTtlARO2dH2lMo9pXN0Z9rGw54qG4n0qG5qRE1R0Mjb0cXlMWdlPR2/exec';
+const BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const JEN=['X','XI','XII'], COL={X:'#c98a12',XI:'#2b6cb0',XII:'#1f8a63'};
+const TITLE={jurnal:'REKAPITULASI SKOR JURNAL KEBERSIHAN KELAS',juri:'HASIL PENILAIAN JURI',juara:'REKAPITULASI JUARA & PENILAIAN AKHIR NALA CSR'};
+let jurnal=[], rekap=[], chart=null, cur='jurnal', first=true;
 
-        <!-- FOOTER PRINT -->
-        <div class="print-header mt-8 text-xs text-gray-400 border-t border-gray-200 pt-3">
-            Dicetak secara otomatis dari Dashboard Nala CSR pada <span id="print-timestamp"></span>
-        </div>
-    </div>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Number(n).toLocaleString('id-ID',{maximumFractionDigits:2});
+const jen=k=>{const m=/^(XII|XI|X)(?![A-Z])/.exec(k);return m?m[1]:null};
+const nat=(a,b)=>{const ja=JEN.indexOf(jen(a)),jb=JEN.indexOf(jen(b));return ja-jb||a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'})};
+const bln=b=>typeof b==='number'?(BLN[b-1]||b):b;
+function monthNum(v){
+  const s=String(v==null?'':v).trim().toLowerCase();
+  if(/^\d+$/.test(s))return +s;
+  const i=s.length>=3?BLN.findIndex(b=>b.toLowerCase().slice(0,3)===s.slice(0,3)):-1;
+  return i>=0?i+1:s;
+}
+const fmtIso=iso=>iso.split('-').reverse().join('/');
 
-    <script>
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxopF0Wmeb8gqeTtlARO2dH2lMo9pXN0Z9rGw54qG4n0qG5qRE1R0Mjb0cXlMWdlPR2/exec';
-        
-        let rawData = [];
-        let myChart = null;
-        let isInitialLoad = true;
+function tab(t){
+  cur=t;
+  ['jurnal','juri','juara'].forEach(x=>{
+    $('s-'+x).classList.toggle('hidden',x!==t);
+    $('t-'+x).classList.toggle('on',x===t);
+  });
+  $('bulanBar').classList.toggle('hidden',t==='jurnal');
+  $('pTitle').textContent=TITLE[t];
+  info();
+}
+function info(){
+  $('pSub').textContent = cur==='jurnal'
+    ? 'Periode: '+($('d1').value?fmtIso($('d1').value):'-')+' s/d '+($('d2').value?fmtIso($('d2').value):'-')
+    : 'Bulan: '+($('selBulan').value?bln(+$('selBulan').value):'Semua bulan (akumulasi)');
+  $('pTime').textContent=new Date().toLocaleString('id-ID');
+}
+function showErr(msg){const e=$('err');e.textContent=msg||'';e.style.display=msg?'block':'none'}
 
-        // Fungsi format tanggal ke YYYY-MM-DD
-        function formatDateToYYYYMMDD(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
+async function getJson(url){
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  if(d&&d.error)throw new Error(d.error);
+  if(!Array.isArray(d))throw new Error('Format data tidak dikenali');
+  return d;
+}
 
-        // Atur default: Tanggal 1 Bulan ini & Hari ini
-        function setDefaultDates() {
-            const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            
-            document.getElementById('startDate').value = formatDateToYYYYMMDD(firstDayOfMonth);
-            document.getElementById('endDate').value = formatDateToYYYYMMDD(today);
-        }
+async function loadAll(){
+  showErr('');
+  const errs=[];
+  try{
+    const d=await getJson(API);
+    jurnal=d.map(i=>({iso:i.isoDate||'',tgl:i.tanggal||'',kelas:String(i.kelas||'').toUpperCase(),skor:Number(i.skor)||0})).filter(i=>i.iso&&i.kelas);
+    if(first){
+      // Default: tanggal 1 bulan berjalan sampai hari ini (waktu lokal)
+      const n=new Date(),p=x=>String(x).padStart(2,'0');
+      $('d1').value=n.getFullYear()+'-'+p(n.getMonth()+1)+'-01';
+      $('d2').value=n.getFullYear()+'-'+p(n.getMonth()+1)+'-'+p(n.getDate());
+    }
+    renderJurnal();
+  }catch(e){errs.push('Data jurnal gagal dimuat ('+e.message+')')}
+  try{
+    // Ambil semua bulan sekaligus; filter bulan dilakukan di sini agar format "1"/"01"/"Januari" tidak masalah.
+    rekap=mergeRekap(await getJson(API+'?action=rekap_nilai'));
+    fillBulan();renderRekap();
+  }catch(e){errs.push('Data rekap gagal dimuat ('+e.message+')')}
+  first=false;
+  showErr(errs.join('. '));
+  $('upd').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  info();
+}
 
-        document.addEventListener('DOMContentLoaded', () => {
-            setDefaultDates(); // Set filter awal otomatis saat DOM siap
-            fetchData();
-            setInterval(fetchData, 120000); // Refresh otomatis 2 menit
-        });
+// Sheet berisi 3 tabel terpisah (Jurnal | Juri | Total) dalam satu baris yang sama,
+// jadi baris belum tentu satu kelas. Gabungkan berdasarkan kelas + bulan.
+function mergeRekap(rows){
+  const m={};
+  rows.forEach(r=>['jurnal','juri','total'].forEach(t=>{
+    const e=r[t]; if(!e||!e.kelas)return;
+    const b=monthNum(e.bulan), k=e.kelas+'|'+b;
+    (m[k]||(m[k]={kelas:e.kelas,bulan:b}))[t]=Number(e.skor)||0;
+  }));
+  return Object.values(m).map(o=>({
+    kelas:o.kelas,bulan:o.bulan,
+    jurnal:o.jurnal||0,juri:o.juri||0,hasJuri:o.juri!==undefined,
+    final:o.total!==undefined?o.total:(o.jurnal||0)+(o.juri||0)
+  }));
+}
+function fillBulan(){
+  const sel=$('selBulan'),old=sel.value;
+  const ms=[...new Set(rekap.map(o=>o.bulan))].sort((a,b)=>(+a||99)-(+b||99));
+  sel.innerHTML='<option value="">Semua bulan (akumulasi)</option>'+ms.map(b=>'<option value="'+esc(b)+'">'+esc(bln(b))+'</option>').join('');
+  sel.value=ms.map(String).includes(old)?old:'';
+}
+function rekapView(){
+  const b=$('selBulan').value;
+  if(b!=='')return rekap.filter(o=>String(o.bulan)===b);
+  const m={};
+  rekap.forEach(o=>{
+    const a=m[o.kelas]||(m[o.kelas]={kelas:o.kelas,bulan:'Semua',jurnal:0,juri:0,final:0,hasJuri:false});
+    a.jurnal+=o.jurnal;a.juri+=o.juri;a.final+=o.final;a.hasJuri=a.hasJuri||o.hasJuri;
+  });
+  return Object.values(m);
+}
+function champs(list,key){
+  const out={};
+  JEN.forEach(j=>{
+    const l=list.filter(o=>jen(o.kelas)===j), mx=Math.max(0,...l.map(o=>o[key]));
+    out[j]={mx,names:mx>0?l.filter(o=>o[key]===mx).map(o=>o.kelas):[]};
+  });
+  return out;
+}
+function cards(el,ch,label,suffix){
+  $(el).innerHTML=JEN.map(j=>'<div class="card j'+j+'"><small>'+label+' Jenjang '+j+'</small><b>'+(ch[j].names.length?esc(ch[j].names.join(' & ')):'–')+'</b><span>'+suffix+': <strong>'+fmt(ch[j].mx)+'</strong></span></div>').join('');
+}
 
-        async function fetchData() {
-            const refreshIcon = document.getElementById('refresh-icon');
-            refreshIcon.classList.add('fa-spin');
+function renderJurnal(){
+  const s=$('d1').value,e=$('d2').value,q=$('q').value.trim().toUpperCase();
+  const f=jurnal.filter(i=>(!s||i.iso>=s)&&(!e||i.iso<=e));
+  const agg={};f.forEach(i=>agg[i.kelas]=(agg[i.kelas]||0)+i.skor);
+  const list=Object.keys(agg).map(k=>({kelas:k,skor:agg[k]}));
+  cards('topJ',champs(list,'skor'),'Tertinggi','Total skor');
+  drawChart(list);
+  drawMatrix(f,q);
+  info();
+}
+function allDates(){$('d1').value='';$('d2').value='';renderJurnal()}
 
-            try {
-                const response = await fetch(WEB_APP_URL);
-                if (!response.ok) throw new Error('Gagal terhubung');
-                
-                const data = await response.json();
-                
-                // Peta data agar isoDate terisi dengan aman (Fallback jika backend menyalurkan format DD/MM)
-                const currentYear = new Date().getFullYear();
-                rawData = data.map(item => {
-                    let iso = item.isoDate;
-                    if (!iso && item.tanggal) {
-                        const parts = item.tanggal.split('/');
-                        if (parts.length === 2) {
-                            iso = `${currentYear}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                        } else {
-                            iso = item.tanggal;
-                        }
-                    }
-                    return { ...item, isoDate: iso };
-                });
+function drawChart(list){
+  if(typeof Chart==='undefined')return;
+  list.sort((a,b)=>nat(a.kelas,b.kelas));
+  if(chart)chart.destroy();
+  chart=new Chart($('chart'),{type:'bar',
+    data:{labels:list.map(o=>o.kelas),datasets:[{data:list.map(o=>o.skor),backgroundColor:list.map(o=>COL[jen(o.kelas)]||'#5d6f80'),borderRadius:5,maxBarThickness:34}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:250},plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eef2f1'}},x:{grid:{display:false}}}}});
+}
 
-                applyFilter();
-            } catch (error) {
-                console.error('Error:', error);
-            } finally {
-                refreshIcon.classList.remove('fa-spin');
-            }
-        }
+function drawMatrix(f,q){
+  const t=$('matrix');
+  if(!f.length){t.innerHTML='<tr><td class="empty">Tidak ada data pada rentang tanggal ini. Ubah tanggal atau pilih “Semua tanggal”.</td></tr>';return}
+  const dates=[...new Set(f.map(i=>i.iso))].sort();
+  const lbl={};f.forEach(i=>lbl[i.iso]=i.tgl||fmtIso(i.iso).slice(0,5));
+  const mx={};f.forEach(i=>{const k=i.kelas+i.iso;mx[k]=(mx[k]||0)+i.skor});
+  const top=Math.max(1,...Object.values(mx));
+  const kelas=[...new Set(f.map(i=>i.kelas))].filter(k=>k.includes(q)).sort(nat);
+  let h='<thead><tr><th class="sl">Kelas</th>'+dates.map(d=>'<th class="c">'+esc(lbl[d])+'</th>').join('')+'<th class="r tot sr">Total</th></tr></thead><tbody>';
+  kelas.forEach(k=>{
+    let tot=0;
+    h+='<tr><td class="sl k">'+esc(k)+'</td>';
+    dates.forEach(d=>{
+      const v=mx[k+d]||0;tot+=v;
+      h+=v?'<td class="c" style="background:rgba(15,118,110,'+(0.08+0.32*v/top).toFixed(2)+')"><b>'+fmt(v)+'</b></td>':'<td class="c" style="color:#b6c2cb">-</td>';
+    });
+    h+='<td class="r tot sr">'+fmt(tot)+'</td></tr>';
+  });
+  t.innerHTML=h+(kelas.length?'':'<tr><td class="empty" colspan="'+(dates.length+2)+'">Kelas tidak ditemukan.</td></tr>')+'</tbody>';
+}
 
-        function applyFilter() {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
-            
-            document.getElementById('print-date-range').innerText = `Periode: ${start || '-'} s/d ${end || '-'}`;
-            document.getElementById('print-timestamp').innerText = new Date().toLocaleString('id-ID');
+// Peringkat selalu dihitung dari skor; urutan tampil mengikuti pilihan "Urutkan tabel".
+function ranked(list,key){
+  const s=list.slice().sort((a,b)=>b[key]-a[key]||nat(a.kelas,b.kelas));
+  const rk=new Map();let r=0,prev=null;
+  s.forEach((o,i)=>{if(o[key]!==prev){r=i+1;prev=o[key]}rk.set(o,r)});
+  const m=$('selSort').value;
+  if(m==='nama')s.sort((a,b)=>nat(a.kelas,b.kelas));
+  else if(m==='namaz')s.sort((a,b)=>nat(b.kelas,a.kelas));
+  else if(m==='jenjang')s.sort((a,b)=>JEN.indexOf(jen(a.kelas))-JEN.indexOf(jen(b.kelas))||b[key]-a[key]||nat(a.kelas,b.kelas));
+  return s.map(o=>({o,rank:rk.get(o)}));
+}
 
-            const filtered = rawData.filter(item => {
-                if (!start && !end) return true;
-                if (start && !end) return item.isoDate >= start;
-                if (!start && end) return item.isoDate <= end;
-                return item.isoDate >= start && item.isoDate <= end;
-            });
+function renderRekap(){
+  const v=rekapView(), bl=$('selBulan').value;
+  const bcell=o=>esc(bl===''?'Semua':bln(o.bulan));
 
-            const aggregated = {};
-            filtered.forEach(item => {
-                if (!aggregated[item.kelas]) aggregated[item.kelas] = 0;
-                aggregated[item.kelas] += Number(item.skor);
-            });
+  // Tab Juri
+  const jr=ranked(v.filter(o=>o.hasJuri),'juri');
+  const jm=Math.max(1,...jr.map(x=>x.o.juri));
+  $('juriT').innerHTML=jr.length
+    ?'<thead><tr><th class="c">Peringkat</th><th>Kelas</th><th class="c">Jenjang</th><th class="c">Bulan</th><th>Skor juri</th></tr></thead><tbody>'
+      +jr.map(({o,rank})=>'<tr><td class="c">'+rank+'</td><td class="k">'+esc(o.kelas)+'</td><td class="c">'+(jen(o.kelas)||'-')+'</td><td class="c">'+bcell(o)+'</td><td class="db"><i style="width:'+(100*o.juri/jm).toFixed(1)+'%"></i><span class="k">'+fmt(o.juri)+'</span></td></tr>').join('')+'</tbody>'
+    :'<tbody><tr><td class="empty">Belum ada nilai juri untuk pilihan bulan ini.</td></tr></tbody>';
 
-            updateTopCards(aggregated);
-            updateChart(aggregated);
-            updateTableMatrix(filtered);
-        }
+  // Tab Juara
+  const ch=champs(v,'final');
+  cards('topC',ch,'Juara','Total skor');
+  const win=new Set(JEN.flatMap(j=>ch[j].names));
+  const tr=ranked(v,'final');
+  $('totalT').innerHTML=tr.length
+    ?'<thead><tr><th class="c">Peringkat</th><th>Kelas</th><th class="c">Bulan</th><th class="r">Nilai jurnal</th><th class="r">Nilai juri</th><th class="r tot">Total skor akhir</th></tr></thead><tbody>'
+      +tr.map(({o,rank})=>'<tr><td class="c">'+rank+'</td><td class="k">'+esc(o.kelas)+(win.has(o.kelas)&&o.final>0?'<span class="badge">Juara '+jen(o.kelas)+'</span>':'')+'</td><td class="c">'+bcell(o)+'</td><td class="r">'+fmt(o.jurnal)+'</td><td class="r">'+fmt(o.juri)+'</td><td class="r tot">'+fmt(o.final)+'</td></tr>').join('')+'</tbody>'
+    :'<tbody><tr><td class="empty">Belum ada data rekapitulasi untuk pilihan bulan ini.</td></tr></tbody>';
+  info();
+}
 
-        function updateTopCards(aggregated) {
-            let topX = { kelas: '-', skor: 0 };
-            let topXI = { kelas: '-', skor: 0 };
-            let topXII = { kelas: '-', skor: 0 };
-
-            for (const [kelas, skor] of Object.entries(aggregated)) {
-                if (kelas.startsWith('X-') && skor > topX.skor) topX = { kelas, skor };
-                else if (kelas.startsWith('XI-') && skor > topXI.skor) topXI = { kelas, skor };
-                else if (kelas.startsWith('XII-') && skor > topXII.skor) topXII = { kelas, skor };
-            }
-
-            document.getElementById('top-x-class').innerText = topX.kelas;
-            document.getElementById('top-x-score').innerText = topX.skor;
-            document.getElementById('top-xi-class').innerText = topXI.kelas;
-            document.getElementById('top-xi-score').innerText = topXI.skor;
-            document.getElementById('top-xii-class').innerText = topXII.kelas;
-            document.getElementById('top-xii-score').innerText = topXII.skor;
-        }
-
-        function updateChart(aggregated) {
-            const labels = Object.keys(aggregated).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
-            const data = labels.map(k => aggregated[k]);
-
-            const ctx = document.getElementById('scoreChart').getContext('2d');
-            if (myChart) myChart.destroy();
-
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Skor',
-                        data: data,
-                        backgroundColor: '#3b82f6',
-                        borderRadius: 8,
-                        barThickness: 32
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 300 },
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        function updateTableMatrix(data) {
-            const thead = document.getElementById('tableHeader');
-            const tbody = document.getElementById('tableBody');
-
-            if (data.length === 0) {
-                thead.innerHTML = `<th class="py-3 px-4">Kelas</th>`;
-                tbody.innerHTML = `<tr><td class="py-4 text-center text-gray-400">Tidak ada data pada rentang tanggal ini.</td></tr>`;
-                return;
-            }
-
-            const dateMap = {};
-            data.forEach(item => {
-                dateMap[item.isoDate] = item.tanggal;
-            });
-            
-            const sortedIsoDates = Object.keys(dateMap).sort();
-
-            let headerHTML = `<th class="py-3 px-4 font-bold text-gray-700 border-b sticky-left min-w-[100px]">Kelas</th>`;
-            sortedIsoDates.forEach(iso => {
-                headerHTML += `<th class="py-3 px-4 text-center border-b whitespace-nowrap min-w-[80px]">${dateMap[iso]}</th>`;
-            });
-            headerHTML += `<th class="py-3 px-4 text-right font-bold text-blue-700 border-b sticky-right min-w-[130px]">Total Skor</th>`;
-            thead.innerHTML = headerHTML;
-
-            const matrix = {};
-            data.forEach(item => {
-                if (!matrix[item.kelas]) matrix[item.kelas] = {};
-                if (!matrix[item.kelas][item.isoDate]) matrix[item.kelas][item.isoDate] = 0;
-                matrix[item.kelas][item.isoDate] += Number(item.skor);
-            });
-
-            const sortedClasses = Object.keys(matrix).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
-
-            let bodyHTML = '';
-            sortedClasses.forEach(kelas => {
-                bodyHTML += `<tr class="hover:bg-gray-50/80 transition-colors">`;
-                bodyHTML += `<td class="py-3 px-4 font-bold text-gray-800 border-b sticky-left">${kelas}</td>`;
-                
-                let totalPerKelas = 0;
-                sortedIsoDates.forEach(iso => {
-                    const skor = matrix[kelas][iso] || 0;
-                    totalPerKelas += skor;
-                    
-                    const displaySkor = skor > 0 
-                        ? `<span class="font-semibold text-gray-700">${skor}</span>` 
-                        : `<span class="text-gray-300">-</span>`;
-                        
-                    bodyHTML += `<td class="py-3 px-4 text-center border-b">${displaySkor}</td>`;
-                });
-
-                bodyHTML += `<td class="py-3 px-4 text-right font-bold text-blue-600 border-b sticky-right">${totalPerKelas}</td>`;
-                bodyHTML += `</tr>`;
-            });
-
-            tbody.innerHTML = bodyHTML;
-        }
-
-        function filterTable() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.getElementById('tableBody').getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const classCell = rows[i].getElementsByTagName('td')[0];
-                if (classCell) {
-                    const textValue = classCell.textContent || classCell.innerText;
-                    rows[i].style.display = textValue.toLowerCase().indexOf(input) > -1 ? "" : "none";
-                }
-            }
-        }
-    </script>
+document.addEventListener('DOMContentLoaded',()=>{tab('jurnal');loadAll();setInterval(loadAll,120000)});
+window.addEventListener('beforeprint',info);
+</script>
 </body>
 </html>
